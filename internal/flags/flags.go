@@ -28,6 +28,9 @@ const defaultStopTimeoutSeconds = 30
 // defaultEmailServerPort sets the default SMTP port (25).
 const defaultEmailServerPort = 25
 
+// defaultAPIRateLimitPerMinute sets the default HTTP API rate limit (60 requests per minute per IP).
+const defaultAPIRateLimitPerMinute = 60
+
 // Errors for flag and environment configuration.
 var (
 	// errInvalidLogFormat indicates an invalid log format was specified in configuration.
@@ -90,6 +93,12 @@ func RegisterSystemFlags(rootCmd *cobra.Command) {
 		"t",
 		envDuration("WATCHTOWER_TIMEOUT"),
 		"Timeout before a container is forcefully stopped")
+
+	flags.StringP(
+		"cooldown-delay",
+		"",
+		envString("WATCHTOWER_COOLDOWN_DELAY"),
+		"Minimum time since image creation before allowing updates. Supports h, m, s, d (days), w (weeks), M (months) (e.g., 24h, 3d, 1w, 1M)")
 
 	flags.BoolP(
 		"no-pull",
@@ -237,6 +246,13 @@ func RegisterSystemFlags(rootCmd *cobra.Command) {
 		"",
 		envBool("WATCHTOWER_HTTP_API_PERIODIC_POLLS"),
 		"Also run periodic updates (specified with --interval and --schedule) if HTTP API is enabled",
+	)
+
+	flags.IntP(
+		"http-api-rate-limit",
+		"",
+		envInt("WATCHTOWER_HTTP_API_RATE_LIMIT"),
+		"Maximum authentication requests per minute per IP address for the HTTP API (default: 60)",
 	)
 
 	// https://no-color.org/
@@ -719,8 +735,10 @@ func SetDefaults() {
 	viper.SetDefault("DOCKER_HOST", "unix:///var/run/docker.sock")
 	viper.SetDefault("WATCHTOWER_POLL_INTERVAL", defaultPollIntervalSeconds)
 	viper.SetDefault("WATCHTOWER_TIMEOUT", time.Second*defaultStopTimeoutSeconds)
+	viper.SetDefault("WATCHTOWER_COOLDOWN_DELAY", "")
 	viper.SetDefault("WATCHTOWER_HTTP_API_HOST", "")
 	viper.SetDefault("WATCHTOWER_HTTP_API_PORT", "8080")
+	viper.SetDefault("WATCHTOWER_HTTP_API_RATE_LIMIT", defaultAPIRateLimitPerMinute)
 	viper.SetDefault("WATCHTOWER_NOTIFICATIONS", []string{})
 	viper.SetDefault("WATCHTOWER_NOTIFICATIONS_LEVEL", "info")
 	viper.SetDefault("WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT", defaultEmailServerPort)

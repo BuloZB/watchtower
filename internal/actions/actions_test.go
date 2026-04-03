@@ -336,6 +336,9 @@ var _ = ginkgo.Describe("Actions", func() {
 				types.ContainerID("old-container-id"),
 				types.ContainerID("new-container-id"),
 				now,
+				"",
+				"",
+				false,
 			)
 
 			gomega.Expect(entries).To(gomega.HaveLen(3))
@@ -371,6 +374,9 @@ var _ = ginkgo.Describe("Actions", func() {
 				types.ContainerID("container-id"),
 				types.ContainerID("new-container-id"),
 				now,
+				"",
+				"",
+				false,
 			)
 
 			gomega.Expect(entries).To(gomega.HaveLen(3))
@@ -383,7 +389,7 @@ var _ = ginkgo.Describe("Actions", func() {
 			now := time.Now()
 			// This will panic with nil pointer dereference, so we expect it to panic
 			gomega.Expect(func() {
-				buildUpdateEntries(nil, types.ContainerID(""), types.ContainerID(""), now)
+				buildUpdateEntries(nil, types.ContainerID(""), types.ContainerID(""), now, "", "", false)
 			}).To(gomega.Panic())
 		})
 	})
@@ -857,6 +863,7 @@ var _ = ginkgo.Describe("Actions", func() {
 			mockReport.EXPECT().Updated().Return([]types.ContainerReport{mockContainer3})
 			mockReport.EXPECT().Failed().Return([]types.ContainerReport{mockContainer4})
 			mockReport.EXPECT().Restarted().Return([]types.ContainerReport{})
+			mockReport.EXPECT().Skipped().Return([]types.ContainerReport{})
 
 			metric := generateAndLogMetric(mockReport)
 
@@ -874,6 +881,7 @@ var _ = ginkgo.Describe("Actions", func() {
 			mockReport.EXPECT().Updated().Return([]types.ContainerReport{})
 			mockReport.EXPECT().Failed().Return([]types.ContainerReport{})
 			mockReport.EXPECT().Restarted().Return([]types.ContainerReport{})
+			mockReport.EXPECT().Skipped().Return([]types.ContainerReport{})
 
 			metric := generateAndLogMetric(mockReport)
 
