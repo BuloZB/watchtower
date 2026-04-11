@@ -33,7 +33,7 @@ jobs:
       id-token: write # For OIDC auth to Docker Hub and GHCR
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@fe104658747b27e96e4f7e80cd0a94068e53901d # v2.16.1
+        uses: step-security/harden-runner@f808768d1510423e83855289c910610ca9b43176 # v2.17.0
         with:
           egress-policy: audit
 
@@ -77,14 +77,14 @@ jobs:
 
       - name: Login to Docker Hub # Authenticate to Docker Hub
         if: ${{ !inputs.dry-run }}
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121
+        uses: docker/login-action@ba754150c9dbbaa912ae0ac3cfba43f84195cef2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Login to GHCR # Authenticate to GHCR
         if: ${{ !inputs.dry-run }}
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121
+        uses: docker/login-action@ba754150c9dbbaa912ae0ac3cfba43f84195cef2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}

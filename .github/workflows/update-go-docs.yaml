@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@fe104658747b27e96e4f7e80cd0a94068e53901d # v2.16.1
+        uses: step-security/harden-runner@f808768d1510423e83855289c910610ca9b43176 # v2.17.0
         with:
           egress-policy: audit
 
       - name: Pull new module version
-        uses: nicholas-fedor/go-proxy-pull-action@66b03fb08ba765cb8fc0937ad13bf7a5f703163c
+        uses: nicholas-fedor/go-proxy-pull-action@6568a554a1ba0271d4b6641a767e7c9aa6011b6a
