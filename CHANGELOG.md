@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Migrate from docker/docker to moby/moby split packages for v29 compatibility by @nicholas-fedor in [#1613](https://github.com/nicholas-fedor/watchtower/pull/1613)
+
+### Tests
+
+- Increase sleep duration to fix timer resolution race by @nicholas-fedor in [#1614](https://github.com/nicholas-fedor/watchtower/pull/1614)
+
+## [1.17.0] - 2026-05-11
+
 ### Added
 
 - Add async query parameter support by @nicholas-fedor in [#1609](https://github.com/nicholas-fedor/watchtower/pull/1609)
@@ -2998,7 +3008,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Compare Releases
 
-- [unreleased](https://github.com/nicholas-fedor/watchtower/compare/v1.16.1...HEAD)
+- [unreleased](https://github.com/nicholas-fedor/watchtower/compare/v1.17.0...HEAD)
+- [1.17.0](https://github.com/nicholas-fedor/watchtower/compare/v1.16.1...v1.17.0)
 - [1.16.1](https://github.com/nicholas-fedor/watchtower/compare/v1.16.0...v1.16.1)
 - [1.16.0](https://github.com/nicholas-fedor/watchtower/compare/v1.15.0...v1.16.0)
 - [1.15.0](https://github.com/nicholas-fedor/watchtower/compare/v1.14.4...v1.15.0)
