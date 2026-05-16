@@ -12,6 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Migrate from docker/docker to moby/moby split packages for v29 compatibility by @nicholas-fedor in [#1613](https://github.com/nicholas-fedor/watchtower/pull/1613)
 
+### Chores
+
+- Update github/codeql-action action to v4.35.5 by @renovate[bot] in [#1627](https://github.com/nicholas-fedor/watchtower/pull/1627)
+- Update step-security/harden-runner action to v2.19.3 by @renovate[bot] in [#1624](https://github.com/nicholas-fedor/watchtower/pull/1624)
+- Update module github.com/docker/cli to v29.5.0+incompatible by @renovate[bot] in [#1622](https://github.com/nicholas-fedor/watchtower/pull/1622)
+- Update step-security/harden-runner action to v2.19.2 by @renovate[bot] in [#1617](https://github.com/nicholas-fedor/watchtower/pull/1617)
+
+### Fixed
+
+- Restore no-restart flag to only skip container start by @nicholas-fedor in [#1626](https://github.com/nicholas-fedor/watchtower/pull/1626)
+- Add missing watchtower label to Docker images by @nicholas-fedor in [#1620](https://github.com/nicholas-fedor/watchtower/pull/1620)
+
 ### Tests
 
 - Increase sleep duration to fix timer resolution race by @nicholas-fedor in [#1614](https://github.com/nicholas-fedor/watchtower/pull/1614)
