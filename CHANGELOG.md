@@ -10,10 +10,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Replace curly apostrophes with straight apostrophes by @nicholas-fedor in [#1667](https://github.com/nicholas-fedor/watchtower/pull/1667)
+
+### Chores
+
+- Update docker/setup-buildx-action action to v4.1.0 by @renovate[bot] in [#1662](https://github.com/nicholas-fedor/watchtower/pull/1662)
+- Update github/codeql-action action to v4.36.0 by @renovate[bot] in [#1660](https://github.com/nicholas-fedor/watchtower/pull/1660)
+- Update docker/login-action action to v4.2.0 by @renovate[bot] in [#1659](https://github.com/nicholas-fedor/watchtower/pull/1659)
+- Update module golang.org/x/net to v0.55.0 by @renovate[bot] in [#1655](https://github.com/nicholas-fedor/watchtower/pull/1655)
+- Update golangci/golangci-lint-action action to v9.2.1 by @renovate[bot] in [#1654](https://github.com/nicholas-fedor/watchtower/pull/1654)
+- Update module golang.org/x/sys to v0.45.0 by @renovate[bot] in [#1651](https://github.com/nicholas-fedor/watchtower/pull/1651)
+- Update cimg/go:1.26.3 docker digest to 9a5aff9 by @renovate[bot] in [#1650](https://github.com/nicholas-fedor/watchtower/pull/1650)
+- Update step-security/harden-runner action to v2.19.4 by @renovate[bot] in [#1647](https://github.com/nicholas-fedor/watchtower/pull/1647)
+- Update nicholas-fedor/go-proxy-pull-action action to v1.1.0 by @renovate[bot] in [#1645](https://github.com/nicholas-fedor/watchtower/pull/1645)
+- Update module github.com/docker/cli to v29.5.2+incompatible by @renovate[bot] in [#1643](https://github.com/nicholas-fedor/watchtower/pull/1643)
+- Update docker/dockerfile:1 docker digest to 87999aa by @renovate[bot] in [#1641](https://github.com/nicholas-fedor/watchtower/pull/1641)
+
+### Fixed
+
+- Add timeout input validation and improve docs by @nicholas-fedor in [#1665](https://github.com/nicholas-fedor/watchtower/pull/1665)
+- Restore revive-stopped configuration handling by @nicholas-fedor in [#1657](https://github.com/nicholas-fedor/watchtower/pull/1657)
+
+## [1.17.1] - 2026-05-19
+
+### Changed
+
 - Migrate from docker/docker to moby/moby split packages for v29 compatibility by @nicholas-fedor in [#1613](https://github.com/nicholas-fedor/watchtower/pull/1613)
 
 ### Chores
 
+- Update nicholas-fedor/go-proxy-pull-action action to v1.0.9 by @renovate[bot] in [#1639](https://github.com/nicholas-fedor/watchtower/pull/1639)
+- Update goreleaser/goreleaser-action action to v7.2.2 by @renovate[bot] in [#1637](https://github.com/nicholas-fedor/watchtower/pull/1637)
+- Update module github.com/docker/cli to v29.5.1+incompatible by @renovate[bot] in [#1635](https://github.com/nicholas-fedor/watchtower/pull/1635)
+- Update codecov/codecov-action action to v6.0.1 by @renovate[bot] in [#1634](https://github.com/nicholas-fedor/watchtower/pull/1634)
+- Update module github.com/onsi/gomega to v1.41.0 by @renovate[bot] in [#1631](https://github.com/nicholas-fedor/watchtower/pull/1631)
+- Update module github.com/onsi/ginkgo/v2 to v2.29.0 by @renovate[bot] in [#1630](https://github.com/nicholas-fedor/watchtower/pull/1630)
 - Update github/codeql-action action to v4.35.5 by @renovate[bot] in [#1627](https://github.com/nicholas-fedor/watchtower/pull/1627)
 - Update step-security/harden-runner action to v2.19.3 by @renovate[bot] in [#1624](https://github.com/nicholas-fedor/watchtower/pull/1624)
 - Update module github.com/docker/cli to v29.5.0+incompatible by @renovate[bot] in [#1622](https://github.com/nicholas-fedor/watchtower/pull/1622)
@@ -3020,7 +3051,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Compare Releases
 
-- [unreleased](https://github.com/nicholas-fedor/watchtower/compare/v1.17.0...HEAD)
+- [unreleased](https://github.com/nicholas-fedor/watchtower/compare/v1.17.1...HEAD)
+- [1.17.1](https://github.com/nicholas-fedor/watchtower/compare/v1.17.0...v1.17.1)
 - [1.17.0](https://github.com/nicholas-fedor/watchtower/compare/v1.16.1...v1.17.0)
 - [1.16.1](https://github.com/nicholas-fedor/watchtower/compare/v1.16.0...v1.16.1)
 - [1.16.0](https://github.com/nicholas-fedor/watchtower/compare/v1.15.0...v1.16.0)

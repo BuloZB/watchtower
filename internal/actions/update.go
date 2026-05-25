@@ -234,7 +234,7 @@ func Update(
 			}
 		}
 
-		// Verify the container’s configuration if it’s slated for update to
+		// Verify the container's configuration if it's slated for update to
 		// ensure recreation is possible.
 		if err == nil && shouldUpdate {
 			err = sourceContainer.VerifyConfiguration()
@@ -452,7 +452,7 @@ func Update(
 			}
 		}
 
-		// Update the container’s stale status for dependency sorting.
+		// Update the container's stale status for dependency sorting.
 		// Only mark as stale if the container should actually be updated.
 		filteredContainers[i].SetStale(stale && shouldUpdate)
 
@@ -1023,7 +1023,7 @@ func parseReference(
 	return normalizedRef, nil
 }
 
-// isPinned checks if a container’s image is pinned by a digest reference.
+// isPinned checks if a container's image is pinned by a digest reference.
 //
 // It selects a valid image name from ImageName(), Config.Image,
 // or a fallback (imageInfo.ID or container name),
@@ -1791,9 +1791,10 @@ func restartStaleContainer(
 			)
 	}
 
-	// Start the new container unless restarts are disabled.
-	// Watchtower containers are always started.
-	if !config.NoRestart || sourceContainer.IsWatchtower() {
+	// Start the new container based on restart settings:
+	// - Watchtower containers bypass the NoRestart check
+	// - All containers (including Watchtower) start only if they were running or ReviveStopped is enabled
+	if (!config.NoRestart || sourceContainer.IsWatchtower()) && (sourceContainer.IsRunning() || config.ReviveStopped) {
 		logrus.WithFields(fields).
 			Debug("Starting container with updated configuration")
 
