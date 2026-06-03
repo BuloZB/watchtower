@@ -38,7 +38,7 @@ Certain flags support referencing a file, using its contents as the value, to se
 | `--http-api-token`                     | `WATCHTOWER_HTTP_API_TOKEN`                     |
 | `--notification-email-server-password` | `WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD` |
 | `--notification-gotify-token`          | `WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN`          |
-| `--notification-msteams-hook`          | `WATCHTOWER_NOTIFICATION_MSTEAMS_HOOK`          |
+| `--notification-msteams-hook`          | `WATCHTOWER_NOTIFICATION_MSTEAMS_HOOK_URL`      |
 | `--notification-slack-hook-url`        | `WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL`        |
 | `--notification-url`                   | `WATCHTOWER_NOTIFICATION_URL`                   |
 
@@ -763,6 +763,19 @@ Environment Variable: WATCHTOWER_HTTP_API_METRICS
 
 !!! Note "See the [Metrics API documentation](../../advanced-features/metrics-api/index.md) for details"
 
+### HTTP API Containers
+
+Enables a read-only endpoint that lists watched containers and their current running image digests.
+
+```text
+            Argument: --http-api-containers
+Environment Variable: WATCHTOWER_HTTP_API_CONTAINERS
+                Type: Boolean
+             Default: false
+```
+
+!!! Note "See the [HTTP API documentation](../../advanced-features/http-api/index.md#http_api_containers) for details"
+
 ### HTTP API Host
 
 Sets the host interface for binding the HTTP API.
@@ -884,7 +897,7 @@ Can reference a file for security.
 
 ```text
             Argument: --notification-msteams-hook
-Environment Variable: WATCHTOWER_NOTIFICATION_MSTEAMS_HOOK
+Environment Variable: WATCHTOWER_NOTIFICATION_MSTEAMS_HOOK_URL
                 Type: String
              Default: None
 ```
@@ -935,6 +948,10 @@ Environment Variable: WATCHTOWER_TIMEOUT
                 Type: Duration (e.g., 30s, 1m, 5m)
               Default: 30s
 ```
+
+!!! Note
+    Bare numeric values (e.g., `60` or `1.5`) without a time unit are interpreted as seconds.
+    Using a unit suffix (`s`, `m`, etc.) is recommended and required for other time units.
 
 ### Cooldown Delay
 

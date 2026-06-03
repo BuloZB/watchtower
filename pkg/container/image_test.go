@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"regexp"
+	"time"
 
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
@@ -39,6 +41,7 @@ var _ = ginkgo.Describe("the client", func() {
 		)
 		gomega.Expect(err).To(gomega.Succeed())
 		mockServer.AppendHandlers(APIVersionPingHandler())
+		mockServer.RouteToHandler("GET", regexp.MustCompile(`/info$`), ghttp.RespondWithJSONEncoded(http.StatusOK, map[string]any{}))
 	})
 	ginkgo.AfterEach(func() {
 		mockServer.Close()
@@ -83,7 +86,7 @@ var _ = ginkgo.Describe("the client", func() {
 						"sha256:fa5269854a5e615e51a72b17ad3fd1e01268f278a6684c8ed3c5f0cdce3f230b",
 					),
 				)
-				err := i.PullImage(context.Background(), pinnedContainer, WarnAuto)
+				err := i.PullImage(context.Background(), pinnedContainer, WarnAuto, types.UpdateParams{})
 				gomega.Expect(err).
 					To(gomega.MatchError(`image is pinned with sha256, skipping pull`))
 			})
@@ -91,6 +94,7 @@ var _ = ginkgo.Describe("the client", func() {
 	})
 	ginkgo.When("pulling an image that requires authentication", func() {
 		ginkgo.It("should log at Warn level and return ErrPullImageUnauthorized for auth failures", func() {
+			mockServer.AllowUnhandledRequests = true
 			mockServer.AppendHandlers(
 				ghttp.CombineHandlers(
 					ghttp.VerifyRequest("POST", gomega.MatchRegexp("/images/create")),
@@ -107,7 +111,7 @@ var _ = ginkgo.Describe("the client", func() {
 			resetLogrus, logbuf := captureLogrus(logrus.DebugLevel)
 			defer resetLogrus()
 
-			err := i.PullImage(context.Background(), pullContainer, WarnAuto)
+			err := i.PullImage(context.Background(), pullContainer, WarnAuto, types.UpdateParams{})
 			gomega.Expect(err).To(gomega.HaveOccurred())
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("authentication required"))
 			gomega.Expect(errors.Is(err, ErrPullImageUnauthorized)).To(gomega.BeTrue())
@@ -118,6 +122,7 @@ var _ = ginkgo.Describe("the client", func() {
 	})
 	ginkgo.When("pulling an image that does not exist in registry", func() {
 		ginkgo.It("should log at Debug level and return ErrPullImageNotFound for not found errors", func() {
+			mockServer.AllowUnhandledRequests = true
 			mockServer.AppendHandlers(
 				ghttp.CombineHandlers(
 					ghttp.VerifyRequest("POST", gomega.MatchRegexp("/images/create")),
@@ -134,7 +139,7 @@ var _ = ginkgo.Describe("the client", func() {
 			resetLogrus, logbuf := captureLogrus(logrus.DebugLevel)
 			defer resetLogrus()
 
-			err := i.PullImage(context.Background(), pullContainer, WarnAuto)
+			err := i.PullImage(context.Background(), pullContainer, WarnAuto, types.UpdateParams{})
 			gomega.Expect(err).To(gomega.HaveOccurred())
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("image not found"))
 			gomega.Expect(errors.Is(err, ErrPullImageNotFound)).To(gomega.BeTrue())
@@ -144,6 +149,7 @@ var _ = ginkgo.Describe("the client", func() {
 	})
 	ginkgo.When("pulling an image with a server error", func() {
 		ginkgo.It("should log at Debug level and return errPullImageFailed for other errors", func() {
+			mockServer.AllowUnhandledRequests = true
 			mockServer.AppendHandlers(
 				ghttp.CombineHandlers(
 					ghttp.VerifyRequest("POST", gomega.MatchRegexp("/images/create")),
@@ -160,7 +166,7 @@ var _ = ginkgo.Describe("the client", func() {
 			resetLogrus, logbuf := captureLogrus(logrus.DebugLevel)
 			defer resetLogrus()
 
-			err := i.PullImage(context.Background(), pullContainer, WarnAuto)
+			err := i.PullImage(context.Background(), pullContainer, WarnAuto, types.UpdateParams{})
 			gomega.Expect(err).To(gomega.HaveOccurred())
 			gomega.Expect(err.Error()).To(gomega.ContainSubstring("failed to pull image"))
 			gomega.Expect(errors.Is(err, errPullImageFailed)).To(gomega.BeTrue())
@@ -169,6 +175,58 @@ var _ = ginkgo.Describe("the client", func() {
 			gomega.Eventually(logbuf).Should(gbytes.Say(`Failed to initiate image pull`))
 		})
 	})
+
+	ginkgo.When("pulling an image with registry mirrors configured", func() {
+		ginkgo.It("should use canonical host when mirror Info() returns no mirrors", func() {
+			// The RouteToHandler for /info already returns empty JSON (no RegistryConfig).
+			// This tests the fallback path: no mirrors configured, should use canonical host.
+			mockServer.AllowUnhandledRequests = true
+			mockServer.AppendHandlers(
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("POST", gomega.MatchRegexp("/images/create")),
+					ghttp.RespondWith(http.StatusUnauthorized, `{"message":"unauthorized"}`),
+				),
+			)
+
+			i := newImageClient(mockClient)
+			pullContainer := MockContainer(
+				WithImageName("private-registry.io/app:latest"),
+				WithRepoDigests([]string{"private-registry.io/app@sha256:abc"}),
+			)
+
+			err := i.PullImage(context.Background(), pullContainer, WarnAuto, types.UpdateParams{})
+			// Should proceed to pull (shouldSkipPull returns false since no mirrors and
+			// canonical registry request fails), resulting in ErrPullImageUnauthorized.
+			gomega.Expect(errors.Is(err, ErrPullImageUnauthorized)).To(gomega.BeTrue())
+		})
+
+		ginkgo.It("should handle Info() API failure gracefully and fall back to canonical", func() {
+			// Override the /info RouteToHandler by appending a failing handler first.
+			// Since RouteToHandler always matches, we need to reset it to return an error.
+			mockServer.RouteToHandler("GET", regexp.MustCompile(`/info$`),
+				ghttp.RespondWith(http.StatusInternalServerError, "daemon error"),
+			)
+			mockServer.AllowUnhandledRequests = true
+			mockServer.AppendHandlers(
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("POST", gomega.MatchRegexp("/images/create")),
+					ghttp.RespondWith(http.StatusUnauthorized, `{"message":"unauthorized"}`),
+				),
+			)
+
+			i := newImageClient(mockClient)
+			pullContainer := MockContainer(
+				WithImageName("private-registry.io/app:latest"),
+				WithRepoDigests([]string{"private-registry.io/app@sha256:abc"}),
+			)
+
+			err := i.PullImage(context.Background(), pullContainer, WarnAuto, types.UpdateParams{})
+			// Info() fails, so resolveRegistryMirrorConfig returns nil, buildMirrorEndpoints
+			// returns nil, and shouldSkipPull falls back to canonical host.
+			gomega.Expect(errors.Is(err, ErrPullImageUnauthorized)).To(gomega.BeTrue())
+		})
+	})
+
 	ginkgo.When("removing a image", func() {
 		ginkgo.When("debug logging is enabled", func() {
 			ginkgo.It("should log removed and untagged images", func() {
@@ -472,3 +530,35 @@ func withContainerImageName(matcher gomegaTypes.GomegaMatcher) gomegaTypes.Gomeg
 		return container.ImageName()
 	}, matcher)
 }
+
+// IsOutsideCooldown tests (white-box, early-out paths require no registry).
+var _ = ginkgo.Describe("IsOutsideCooldown (cooldown gating before pull)", func() {
+	ginkgo.When("no cooldown delay is configured", func() {
+		ginkgo.It("returns true (safe to pull) with no registry calls", func() {
+			i := newImageClient(nil)
+			c := MockContainer(WithImageName("test:latest"))
+
+			outside, err := i.isOutsideCooldown(
+				context.Background(), c, types.UpdateParams{},
+			)
+			gomega.Expect(err).ToNot(gomega.HaveOccurred())
+			gomega.Expect(outside).To(gomega.BeTrue())
+		})
+	})
+
+	ginkgo.When("container is monitor-only or no-pull", func() {
+		ginkgo.It("returns true (bypasses cooldown check)", func() {
+			i := newImageClient(nil)
+			c := MockContainer(WithImageName("test:latest"))
+
+			outside, err := i.isOutsideCooldown(
+				context.Background(), c, types.UpdateParams{
+					MonitorOnly:   true,
+					CooldownDelay: 24 * time.Hour,
+				},
+			)
+			gomega.Expect(err).ToNot(gomega.HaveOccurred())
+			gomega.Expect(outside).To(gomega.BeTrue())
+		})
+	})
+})

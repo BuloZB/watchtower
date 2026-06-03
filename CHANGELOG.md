@@ -8,6 +8,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add barnabasbusa as a contributor for code and doc by @allcontributors[bot] in [#1706](https://github.com/nicholas-fedor/watchtower/pull/1706)
+- Add read-only /v1/containers endpoint by @barnabasbusa in [#1700](https://github.com/nicholas-fedor/watchtower/pull/1700)
+- Add eligible_at timestamp to cooldown deferral logs and notifications by @nicholas-fedor in [#1698](https://github.com/nicholas-fedor/watchtower/pull/1698)
+- Add Docker registry mirror support for digest comparison by @nicholas-fedor in [#1693](https://github.com/nicholas-fedor/watchtower/pull/1693)
+
+### Changed
+
+- Update allcontributors emoji key link to use canonical URL by @nicholas-fedor in [#1696](https://github.com/nicholas-fedor/watchtower/pull/1696)
+
+### Chores
+
+- Update golang:alpine docker digest to 376f4a3 by @renovate[bot] in [#1719](https://github.com/nicholas-fedor/watchtower/pull/1719)
+- Update module github.com/nicholas-fedor/shoutrrr to v0.16.0 by @renovate[bot] in [#1716](https://github.com/nicholas-fedor/watchtower/pull/1716)
+- Update go module directive to v1.26.4 by @renovate[bot] in [#1715](https://github.com/nicholas-fedor/watchtower/pull/1715)
+- Update github/codeql-action action to v4.36.1 by @renovate[bot] in [#1711](https://github.com/nicholas-fedor/watchtower/pull/1711)
+- Update actions/checkout action to v6.0.3 by @renovate[bot] in [#1710](https://github.com/nicholas-fedor/watchtower/pull/1710)
+- Update securego/gosec action to v2.27.1 by @renovate[bot] in [#1707](https://github.com/nicholas-fedor/watchtower/pull/1707)
+- Update module github.com/prometheus/common to v0.68.0 by @renovate[bot] in [#1703](https://github.com/nicholas-fedor/watchtower/pull/1703)
+- Update module github.com/mattn/go-colorable to v0.1.15 by @renovate[bot] in [#1701](https://github.com/nicholas-fedor/watchtower/pull/1701)
+- Update module go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp to v0.69.0 by @renovate[bot] in [#1688](https://github.com/nicholas-fedor/watchtower/pull/1688)
+- Update opentelemetry-go monorepo to v1.44.0 by @renovate[bot] in [#1681](https://github.com/nicholas-fedor/watchtower/pull/1681)
+- Update docker/setup-qemu-action action to v4.1.0 by @renovate[bot] in [#1679](https://github.com/nicholas-fedor/watchtower/pull/1679)
+- Update module github.com/nicholas-fedor/shoutrrr to v0.15.1 by @renovate[bot] in [#1671](https://github.com/nicholas-fedor/watchtower/pull/1671)
+
+### Fixed
+
+- Update Shoutrrr MS Teams integration by @nicholas-fedor in [#1718](https://github.com/nicholas-fedor/watchtower/pull/1718)
+- Resolve stale watchtower container ambiguity in detection and cleanup by @nicholas-fedor in [#1713](https://github.com/nicholas-fedor/watchtower/pull/1713)
+- Strip quotes from cron schedule spec before parsing by @nicholas-fedor in [#1686](https://github.com/nicholas-fedor/watchtower/pull/1686)
+- Set Detach true in ExecStart to prevent blocking on command execution by @nicholas-fedor in [#1683](https://github.com/nicholas-fedor/watchtower/pull/1683)
+- Rewrite implicit restart resolution and dependency matching by @nicholas-fedor in [#1677](https://github.com/nicholas-fedor/watchtower/pull/1677)
+- Interpret bare numeric timeout as seconds by @nicholas-fedor in [#1675](https://github.com/nicholas-fedor/watchtower/pull/1675)
+- Default empty device CgroupPermissions to 'rwm' for Podman compatibility by @nicholas-fedor in [#1673](https://github.com/nicholas-fedor/watchtower/pull/1673)
+- Prevent image pull when within cooldown window by @nicholas-fedor in [#1669](https://github.com/nicholas-fedor/watchtower/pull/1669)
+
+### New Contributors
+
+- @barnabasbusa made their first contribution in [#1700](https://github.com/nicholas-fedor/watchtower/pull/1700)
+
+## [1.17.2] - 2026-05-23
+
 ### Changed
 
 - Replace curly apostrophes with straight apostrophes by @nicholas-fedor in [#1667](https://github.com/nicholas-fedor/watchtower/pull/1667)
@@ -3051,7 +3094,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Compare Releases
 
-- [unreleased](https://github.com/nicholas-fedor/watchtower/compare/v1.17.1...HEAD)
+- [unreleased](https://github.com/nicholas-fedor/watchtower/compare/v1.17.2...HEAD)
+- [1.17.2](https://github.com/nicholas-fedor/watchtower/compare/v1.17.1...v1.17.2)
 - [1.17.1](https://github.com/nicholas-fedor/watchtower/compare/v1.17.0...v1.17.1)
 - [1.17.0](https://github.com/nicholas-fedor/watchtower/compare/v1.16.1...v1.17.0)
 - [1.16.1](https://github.com/nicholas-fedor/watchtower/compare/v1.16.0...v1.16.1)
