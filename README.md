@@ -9,7 +9,6 @@
   [![CircleCI](https://dl.circleci.com/status-badge/img/gh/nicholas-fedor/watchtower/tree/main.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/nicholas-fedor/watchtower/tree/main)
   [![codecov](https://codecov.io/gh/nicholas-fedor/watchtower/branch/main/graph/badge.svg)](https://codecov.io/gh/nicholas-fedor/watchtower)
   [![GoDoc](https://godoc.org/github.com/nicholas-fedor/watchtower?status.svg)](https://godoc.org/github.com/nicholas-fedor/watchtower)
-  [![Go Report Card](https://goreportcard.com/badge/github.com/nicholas-fedor/watchtower)](https://goreportcard.com/report/github.com/nicholas-fedor/watchtower)
   [![latest version](https://img.shields.io/github/tag/nicholas-fedor/watchtower.svg)](https://github.com/nicholas-fedor/watchtower/releases)
   [![Apache-2.0 License](https://img.shields.io/github/license/nicholas-fedor/watchtower.svg)](https://www.apache.org/licenses/LICENSE-2.0)
   [![Codacy Badge](https://app.codacy.com/project/badge/Grade/1c48cfb7646d4009aa8c6f71287670b8)](https://www.codacy.com/gh/nicholas-fedor/watchtower/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nicholas-fedor/watchtower&amp;utm_campaign=Badge_Grade)
@@ -36,7 +35,7 @@ If that is you, you should be looking into using Kubernetes enabled with CI/CD, 
 
 **⚠️ Note:** It is recommended to use the latest version of Docker. You can check your host's Docker version using the [CLI command](https://docs.docker.com/reference/cli/docker/version/) `docker version`.
 This version of Watchtower has been tested to support v1.43 and higher; however, don't be surprised if you experience unexpected behavior when attempting to use newer features on older versions of Docker.
-This version autonegotiates the API version by default. If the `DOCKER_API_VERSION` [variable](https://watchtower.nickfedor.com/configuration/arguments/#docker_api_version) is explicitly set, Watchtower validates the version and falls back to autonegotiation on failure.
+This version autonegotiates the API version by default. If the `DOCKER_API_VERSION` [variable](https://watchtower.nickfedor.com/configuration/docker-connection/#docker_api_version) is explicitly set, Watchtower validates the version and falls back to autonegotiation on failure.
 
 ## Supported Architectures
 
@@ -54,11 +53,11 @@ The full documentation is available at <https://watchtower.nickfedor.com/>.
 
 ## Star History
 
-<a href="https://www.star-history.com/#nicholas-fedor/watchtower&type=timeline&logscale&legend=top-left">
+<a href="https://www.star-history.com/?type=timeline&logscale=&legend=top-left&repos=nicholas-fedor%2Fwatchtower">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=nicholas-fedor/watchtower&type=timeline&theme=dark&logscale&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=nicholas-fedor/watchtower&type=timeline&logscale&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=nicholas-fedor/watchtower&type=timeline&logscale&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=nicholas-fedor/watchtower&type=timeline&theme=dark&logscale&legend=top-left&sealed_token=psoQA5TipWC1du5poc_YGImqILCN0FiZccvjEEFxLhVS0YlPr7Ur79tUc-gAfaOoQuQBhG0uA4rkmJc_H2nWZPnnfs6Fq1Z9jeWvALffxz0H7YHaCRgcruDl9IAZfnk583p-dw8eADmTsMTnK6t8ANgDLXxFd3mM-R3Y_8_HYOe35IQc3FgUkdYQJG1_" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=nicholas-fedor/watchtower&type=timeline&logscale&legend=top-left&sealed_token=psoQA5TipWC1du5poc_YGImqILCN0FiZccvjEEFxLhVS0YlPr7Ur79tUc-gAfaOoQuQBhG0uA4rkmJc_H2nWZPnnfs6Fq1Z9jeWvALffxz0H7YHaCRgcruDl9IAZfnk583p-dw8eADmTsMTnK6t8ANgDLXxFd3mM-R3Y_8_HYOe35IQc3FgUkdYQJG1_" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=nicholas-fedor/watchtower&type=timeline&logscale&legend=top-left&sealed_token=psoQA5TipWC1du5poc_YGImqILCN0FiZccvjEEFxLhVS0YlPr7Ur79tUc-gAfaOoQuQBhG0uA4rkmJc_H2nWZPnnfs6Fq1Z9jeWvALffxz0H7YHaCRgcruDl9IAZfnk583p-dw8eADmTsMTnK6t8ANgDLXxFd3mM-R3Y_8_HYOe35IQc3FgUkdYQJG1_" />
  </picture>
 </a>
 <!-- markdownlint-restore -->
@@ -204,6 +203,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/e
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/veeceey"><img src="https://avatars.githubusercontent.com/u/34209028?v=4?s=100" width="100px;" alt="Varun Chawla"/><br /><sub><b>Varun Chawla</b></sub></a><br /><a href="https://github.com/nicholas-fedor/watchtower/commits?author=veeceey" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/LJspice"><img src="https://avatars.githubusercontent.com/u/8888722?v=4?s=100" width="100px;" alt="LJspice"/><br /><sub><b>LJspice</b></sub></a><br /><a href="https://github.com/nicholas-fedor/watchtower/commits?author=LJspice" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/barnabasbusa"><img src="https://avatars.githubusercontent.com/u/21987084?v=4?s=100" width="100px;" alt="Barnabas Busa"/><br /><sub><b>Barnabas Busa</b></sub></a><br /><a href="https://github.com/nicholas-fedor/watchtower/commits?author=barnabasbusa" title="Code">💻</a> <a href="https://github.com/nicholas-fedor/watchtower/commits?author=barnabasbusa" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Thubo"><img src="https://avatars.githubusercontent.com/u/4083975?v=4?s=100" width="100px;" alt="Matthias Thubauville"/><br /><sub><b>Matthias Thubauville</b></sub></a><br /><a href="https://github.com/nicholas-fedor/watchtower/commits?author=Thubo" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://gauthierpainteaux.fr"><img src="https://avatars.githubusercontent.com/u/32100821?v=4?s=100" width="100px;" alt="Gauthier Painteaux"/><br /><sub><b>Gauthier Painteaux</b></sub></a><br /><a href="https://github.com/nicholas-fedor/watchtower/commits?author=Greite" title="Code">💻</a> <a href="https://github.com/nicholas-fedor/watchtower/commits?author=Greite" title="Tests">⚠️</a> <a href="https://github.com/nicholas-fedor/watchtower/commits?author=Greite" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>

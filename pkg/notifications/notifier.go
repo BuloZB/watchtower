@@ -86,6 +86,13 @@ func NewNotifier(c *cobra.Command) types.Notifier {
 // Returns:
 //   - []string: Updated URL list.
 //   - time.Duration: Notification delay.
+//
+// Deprecated: Legacy notification types are deprecated.
+// Use --notification-url instead.
+//
+// TODO: Remove AppendLegacyUrls for the v2 release.
+//
+//nolint:godox
 func AppendLegacyUrls(urls []string, cmd *cobra.Command) ([]string, time.Duration) {
 	clog := logrus.WithField("function", "AppendLegacyUrls")
 	clog.Debug("Appending legacy notification URLs")
@@ -162,6 +169,10 @@ func AppendLegacyUrls(urls []string, cmd *cobra.Command) ([]string, time.Duratio
 //
 // Returns:
 //   - time.Duration: Selected delay.
+//
+// TODO: Simplify GetDelay to only use --notifications-delay when legacy types are removed.
+//
+//nolint:godox
 func GetDelay(c *cobra.Command, legacyDelay time.Duration) time.Duration {
 	clog := logrus.WithField("legacy_delay", legacyDelay)
 	clog.Debug("Determining notification delay")
@@ -252,7 +263,10 @@ func GetTemplateData(c *cobra.Command) StaticData {
 		if tag == "" {
 			// Check legacy email tag.
 			tag, _ = flag.GetString("notification-email-subjecttag")
-			clog.WithField("tag", tag).Debug("Using legacy email subject tag")
+			if tag != "" {
+				clog.WithField("tag", tag).
+					Warn("Using deprecated email subject tag flag. Use the notification-title-tag configuration option instead.")
+			}
 		}
 
 		title = GetTitle(hostname, tag)
@@ -266,5 +280,25 @@ func GetTemplateData(c *cobra.Command) StaticData {
 	return StaticData{
 		Host:  hostname,
 		Title: title,
+	}
+}
+
+// LogLegacyDeprecationWarnings logs deprecation warnings for legacy notification types.
+//
+// It iterates over the provided notification types and logs a warning for each
+// legacy type, advising users to migrate to the notification-url configuration option.
+//
+// Parameters:
+//   - notificationTypes: List of notification type strings to check.
+func LogLegacyDeprecationWarnings(notificationTypes []string) {
+	for _, notificationType := range notificationTypes {
+		switch notificationType {
+		case emailType, slackType, msTeamsType, gotifyType:
+			logrus.Warnf(
+				"Using deprecated legacy %s notification configuration. "+
+					"Use the notification-url configuration option instead.",
+				notificationType,
+			)
+		}
 	}
 }

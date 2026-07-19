@@ -8,6 +8,11 @@ import (
 	dockerImage "github.com/moby/moby/api/types/image"
 )
 
+// WatchtowerOldPrefix is the prefix used when renaming Watchtower containers
+// during self-update. It is the single source of truth for both rename
+// generation and old-name detection to prevent cross-file protocol drift.
+const WatchtowerOldPrefix = "watchtower-old-"
+
 // Container defines a docker container's interface in Watchtower.
 type Container interface {
 	ContainerInfo() *dockerContainer.InspectResponse  // Container metadata.
@@ -20,6 +25,7 @@ type Container interface {
 	IsMonitorOnly(params UpdateParams) bool           // Monitor-only check.
 	Scope() (string, bool)                            // Scope value and presence.
 	Links(useComposeDependsOn bool) []string          // Dependency links.
+	GetLabel(key string) (string, bool)               // Arbitrary label value lookup.
 	ToRestart() bool                                  // Needs restart check.
 	IsWatchtower() bool                               // Watchtower instance check.
 	StopSignal() string                               // Custom stop signal.

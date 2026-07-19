@@ -34,6 +34,7 @@ type TestData struct {
 	StartContainerCount          atomic.Int32                          // Number of times StartContainer was called.
 	CreateContainerCount         atomic.Int32                          // Number of times CreateContainer was called.
 	UpdateContainerCount         atomic.Int32                          // Number of times UpdateContainer was called.
+	SetNoRestartPolicyCount      atomic.Int32                          // Number of times SetNoRestartPolicy was called.
 	IsContainerStaleCount        atomic.Int32                          // Number of times IsContainerStale was called.
 	WaitForContainerHealthyCount atomic.Int32                          // Number of times WaitForContainerHealthy was called.
 	ListContainersCount          atomic.Int32                          // Number of times ListContainers was called.
@@ -56,6 +57,9 @@ type TestData struct {
 	StartOrder                   []string                              // Order in which containers were started.
 	SimulatedLatency             time.Duration                         // Simulated latency for operations (default 0 for fast tests, set for context cancellation tests).
 	LastContainerChain           string                                // Last container chain passed to CreateEphemeralOrchestrator.
+	LastUpdateConfig             *dockerContainer.UpdateConfig         // Last UpdateContainer config received.
+	SetNoRestartPolicyContainer  types.Container                        // Last container passed to SetNoRestartPolicy.
+	SetNoRestartPolicyCtx        context.Context                        // Last context passed to SetNoRestartPolicy.
 }
 
 // TriedToRemoveImage checks if RemoveImageByID has been invoked.
@@ -269,14 +273,23 @@ func (client MockClient) RenameContainer(ctx context.Context, _ types.Container,
 
 // UpdateContainer simulates updating a container's configuration.
 // It increments the UpdateContainerCount and returns the configured error if set.
-func (client MockClient) UpdateContainer(ctx context.Context, _ types.Container, _ dockerContainer.UpdateConfig) error {
+func (client MockClient) UpdateContainer(ctx context.Context, _ types.Container, config dockerContainer.UpdateConfig) error {
 	client.TestData.UpdateContainerCount.Add(1)
+	client.TestData.LastUpdateConfig = &config
 
 	if err := client.checkContextCancellation(ctx); err != nil {
 		return err
 	}
 
 	return client.TestData.UpdateContainerError
+}
+
+// SetNoRestartPolicy simulates setting a container's restart policy to "no".
+// It increments the SetNoRestartPolicyCount and records the container and context for test assertions.
+func (client MockClient) SetNoRestartPolicy(ctx context.Context, container types.Container) {
+	client.TestData.SetNoRestartPolicyCount.Add(1)
+	client.TestData.SetNoRestartPolicyContainer = container
+	client.TestData.SetNoRestartPolicyCtx = ctx
 }
 
 // RemoveImageByID increments the count of image removal attempts in TestData.
@@ -363,16 +376,16 @@ func (client MockClient) IsContainerStale(
 	ctx context.Context,
 	container types.Container,
 	_ types.UpdateParams,
-) (bool, types.ImageID, error) {
+) (bool, types.ImageID, string, error) {
 	client.TestData.IsContainerStaleCount.Add(1)
 
 	if err := client.checkContextCancellation(ctx); err != nil {
-		return false, "", err
+		return false, "", "", err
 	}
 
 	// Return configured error if set (for testing error conditions)
 	if client.TestData.IsContainerStaleError != nil {
-		return false, "", client.TestData.IsContainerStaleError
+		return false, "", "", client.TestData.IsContainerStaleError
 	}
 
 	stale, found := client.TestData.Staleness[container.Name()]
@@ -380,7 +393,16 @@ func (client MockClient) IsContainerStale(
 		stale = true // Default to stale if not specified.
 	}
 
-	return stale, "", nil
+	return stale, "", "", nil
+}
+
+// CheckContainerUpdate reports update availability using the same staleness map as IsContainerStale.
+func (client MockClient) CheckContainerUpdate(
+	ctx context.Context,
+	container types.Container,
+	params types.UpdateParams,
+) (bool, types.ImageID, string, error) {
+	return client.IsContainerStale(ctx, container, params)
 }
 
 // WarnOnHeadPullFailed always returns true for the mock client.
@@ -441,4 +463,9 @@ func (client MockClient) GetInfo(ctx context.Context) (map[string]any, error) {
 		"ServerVersion": "1.50",
 		"OSType":        "linux",
 	}, nil
+}
+
+// Ping returns nil to simulate a healthy Docker daemon.
+func (client MockClient) Ping(ctx context.Context) error {
+	return client.checkContextCancellation(ctx)
 }

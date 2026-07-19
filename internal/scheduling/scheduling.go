@@ -18,8 +18,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
+	"github.com/nicholas-fedor/watchtower/internal/metrics"
 	"github.com/nicholas-fedor/watchtower/pkg/container"
-	"github.com/nicholas-fedor/watchtower/pkg/metrics"
 	"github.com/nicholas-fedor/watchtower/pkg/types"
 )
 
@@ -78,6 +78,7 @@ func WaitForRunningUpdate(ctx context.Context, lock chan bool) {
 //   - currentWatchtowerContainer: The current Watchtower container for parent checking.
 //   - startupMessageSent: Whether the startup message was already sent (e.g., by the HTTP API in blocking mode).
 //   - ephemeralSelfUpdate: Whether the self-update uses ephemeral mode (removes old container before creating new one).
+//   - reviveStopped: Whether to start stopped containers after update.
 //
 // Returns:
 //   - error: An error if scheduling fails (e.g., invalid cron spec), nil on successful shutdown.
@@ -101,6 +102,7 @@ func RunUpgradesOnSchedule(
 	currentWatchtowerContainer types.Container,
 	startupMessageSent bool,
 	ephemeralSelfUpdate bool,
+	reviveStopped bool,
 ) error {
 	// Initialize lock if not provided, ensuring single-update concurrency.
 	if lock == nil {
@@ -140,7 +142,7 @@ func RunUpgradesOnSchedule(
 		if skipSelfUpdateForPorts {
 			skipWatchtowerSelfUpdate = true
 
-			logrus.Debug("Skipping self-update to prevent port conflict")
+			logrus.Debug("Published ports detected - self-update skipped.")
 		}
 
 		// Skip update if this is a Watchtower parent container (from self-update chain)
@@ -184,6 +186,7 @@ func RunUpgradesOnSchedule(
 			RunOnce:        false,
 			MonitorOnly:    monitorOnly,
 			SkipSelfUpdate: skipWatchtowerSelfUpdate,
+			ReviveStopped:  reviveStopped,
 		}
 
 		metric := runUpdatesWithNotifications(ctx, filter, params)
@@ -287,9 +290,14 @@ func RunUpgradesOnSchedule(
 
 // ShouldExitDueToInvalidRestart determines if the program should exit due to an invalid restart of an old Watchtower container.
 //
-// This function checks if the current container is present in the container chain.
-// If it is and the run-once flag is not set, then it indicates an invalid restart scenario
-// and returns true to signal program exit, preventing potential issues with container updates.
+// This function checks two conditions:
+//  1. The current container's name matches the watchtower-old-* prefix, indicating it is
+//     a predecessor renamed during self-update that should not run.
+//  2. The current container is present in the container chain label, indicating it is
+//     an ancestor in the self-update lineage.
+//
+// If either condition is true and the run-once flag is not set, the program should exit
+// to prevent an old Watchtower container from running.
 //
 // Parameters:
 //   - c: The current Watchtower container to check.
@@ -301,28 +309,28 @@ func ShouldExitDueToInvalidRestart(
 	c types.Container,
 	flags *pflag.FlagSet,
 ) bool {
-	// If the container is nil, return false to avoid unnecessary checks.
 	if c == nil {
 		return false
 	}
 
-	// Get the value of the com.centurylinklabs.watchtower.container-chain label.
-	chain, present := c.GetContainerChain()
-
-	// If the label is not present, return false.
-	if !present {
-		return false
-	}
-
-	// Check if the current container is present in the container chain.
-	if container.IsWatchtowerParent(c.ID(), chain) {
+	if container.IsOldContainer(c.Name()) {
 		runOnce, _ := flags.GetBool("run-once")
 		if !runOnce {
-			// If the current container is in the chain and run-once is not set, exit.
 			return true
 		}
 	}
 
-	// If the current container is not in the chain, or run-once is set, continue normal operation.
+	chain, present := c.GetContainerChain()
+	if !present {
+		return false
+	}
+
+	if container.IsWatchtowerParent(c.ID(), chain) {
+		runOnce, _ := flags.GetBool("run-once")
+		if !runOnce {
+			return true
+		}
+	}
+
 	return false
 }
