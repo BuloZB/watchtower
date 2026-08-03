@@ -954,6 +954,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Chores
 
+- Activity sync [2026-08-03] by @BuloZB in [#58](https://github.com/BuloZB/watchtower/pull/58)
 - Activity sync [2026-07-21] by @BuloZB in [#57](https://github.com/BuloZB/watchtower/pull/57)
 - Activity sync [2026-07-20] by @BuloZB in [#56](https://github.com/BuloZB/watchtower/pull/56)
 - Update go-openapi packages to v0.27.1 by @renovate[bot]
@@ -2618,9 +2619,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### New Contributors
 
-- @BuloZB made their first contribution in [#57](https://github.com/BuloZB/watchtower/pull/57)
+- @BuloZB made their first contribution in [#58](https://github.com/BuloZB/watchtower/pull/58)
+- @github-actions[bot] made their first contribution in [#49](https://github.com/BuloZB/watchtower/pull/49)
 - @renovate[bot] made their first contribution
-- @github-actions[bot] made their first contribution
 - @nicholas-fedor made their first contribution
 - @llc1123 made their first contribution
 - @allcontributors[bot] made their first contribution
